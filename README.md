@@ -142,8 +142,11 @@ All settings can be managed via the **Settings tab** in the dashboard or directl
 5. Update stored `lastPostId` to prevent duplicates
 6. Log the result
 
-## Notes
+## 🔒 Important Notes
+ 
+- The **first poll** per source page saves the latest post ID **without reposting** to avoid flooding old content
+- Duplicate prevention is handled via stored `lastPostId` per source page
+- All activity is logged in `data/store.json` and visible in the Logs tab
+---
+ 
 
-- First run per page **saves** the latest post ID without reposting (avoids spam)
-- Duplicate prevention via stored post IDs
-- All logs visible in the Logs tab of the dashboard
