@@ -122,6 +122,16 @@ All settings can be managed via the **Settings tab** in the dashboard or directl
 | `pollIntervalMinutes` | How often to check for new posts (default: 5) |
  
 ---
+## 📸 Dashboard Preview
+ 
+| Tab | Description |
+|---|---|
+| Dashboard | Live poller status, stats, manual trigger |
+| Source Pages | Add/remove/toggle monitored pages |
+| Repost Logs | Full history of all repost activity |
+| Settings | Configure target page and API token |
+ 
+---
 
 ## How It Works
 
