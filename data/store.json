@@ -1,0 +1,139 @@
+{
+  "config": {
+    "targetPageId": "https://www.facebook.com/balenOfficial",
+    "targetPageToken": "",
+    "pollIntervalMinutes": 5
+  },
+  "sourcePages": [
+    {
+      "id": "https://www.facebook.com/balenOfficial",
+      "name": "balenOfficial",
+      "token": "",
+      "active": true,
+      "lastPostId": null,
+      "addedAt": "2026-06-08T11:55:37.101Z"
+    },
+    {
+      "id": "100044467927963",
+      "name": "balenOfficial",
+      "token": "",
+      "active": true,
+      "lastPostId": null,
+      "addedAt": "2026-06-08T11:59:31.316Z"
+    }
+  ],
+  "repostLog": [
+    {
+      "sourcePageId": "100044467927963",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "An access token is required to request this resource.",
+      "timestamp": "2026-06-08T12:20:01.315Z"
+    },
+    {
+      "sourcePageId": "https://www.facebook.com/balenOfficial",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "(#200) Provide valid app ID",
+      "timestamp": "2026-06-08T12:20:01.068Z"
+    },
+    {
+      "sourcePageId": "100044467927963",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "An access token is required to request this resource.",
+      "timestamp": "2026-06-08T12:15:01.374Z"
+    },
+    {
+      "sourcePageId": "https://www.facebook.com/balenOfficial",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "(#200) Provide valid app ID",
+      "timestamp": "2026-06-08T12:15:01.096Z"
+    },
+    {
+      "sourcePageId": "100044467927963",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "An access token is required to request this resource.",
+      "timestamp": "2026-06-08T12:10:01.166Z"
+    },
+    {
+      "sourcePageId": "https://www.facebook.com/balenOfficial",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "(#200) Provide valid app ID",
+      "timestamp": "2026-06-08T12:10:00.916Z"
+    },
+    {
+      "sourcePageId": "100044467927963",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "An access token is required to request this resource.",
+      "timestamp": "2026-06-08T12:05:01.149Z"
+    },
+    {
+      "sourcePageId": "https://www.facebook.com/balenOfficial",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "(#200) Provide valid app ID",
+      "timestamp": "2026-06-08T12:05:00.885Z"
+    },
+    {
+      "sourcePageId": "100044467927963",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "An access token is required to request this resource.",
+      "timestamp": "2026-06-08T12:00:01.481Z"
+    },
+    {
+      "sourcePageId": "https://www.facebook.com/balenOfficial",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "(#200) Provide valid app ID",
+      "timestamp": "2026-06-08T12:00:01.204Z"
+    },
+    {
+      "sourcePageId": "100044467927963",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "An access token is required to request this resource.",
+      "timestamp": "2026-06-08T11:59:58.538Z"
+    },
+    {
+      "sourcePageId": "https://www.facebook.com/balenOfficial",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "(#200) Provide valid app ID",
+      "timestamp": "2026-06-08T11:59:58.265Z"
+    },
+    {
+      "sourcePageId": "100044467927963",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "An access token is required to request this resource.",
+      "timestamp": "2026-06-08T11:59:57.414Z"
+    },
+    {
+      "sourcePageId": "https://www.facebook.com/balenOfficial",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "(#200) Provide valid app ID",
+      "timestamp": "2026-06-08T11:59:57.101Z"
+    },
+    {
+      "sourcePageId": "https://www.facebook.com/balenOfficial",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "(#200) Provide valid app ID",
+      "timestamp": "2026-06-08T11:56:52.854Z"
+    },
+    {
+      "sourcePageId": "https://www.facebook.com/balenOfficial",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "(#200) Provide valid app ID",
+      "timestamp": "2026-06-08T11:56:39.544Z"
+    }
+  ]
+}
