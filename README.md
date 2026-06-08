@@ -84,6 +84,27 @@ http://localhost:3000
 4. Generate a **Page Access Token** via Graph API Explorer
 5. Go to **Settings** tab in dashboard and paste your tokens
 
+ 
+## 🔑 Facebook API Setup
+ 
+### Required Permissions
+ 
+| Permission | Purpose |
+|---|---|
+| `pages_read_engagement` | Read posts from source pages |
+| `pages_manage_posts` | Publish posts to your target page |
+| `pages_show_list` | List pages you manage |
+ 
+### Getting Your Access Token
+ 
+1. Go to [developers.facebook.com](https://developers.facebook.com)
+2. Create a new App → choose **Business** type
+3. Navigate to **Tools → Graph API Explorer**
+4. Select your app and click **Generate Access Token**
+5. Grant the required permissions listed above
+6. Copy the token → paste it in the **Settings** tab of the dashboard
+> **Note:** User tokens expire in ~1 hour. For a permanent token, generate a **Long-Lived Page Access Token** via the token debugger tool.
+
 ## Configuration
 
 Edit `data/store.json` directly or use the Settings UI:
