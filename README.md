@@ -105,15 +105,23 @@ http://localhost:3000
 6. Copy the token → paste it in the **Settings** tab of the dashboard
 > **Note:** User tokens expire in ~1 hour. For a permanent token, generate a **Long-Lived Page Access Token** via the token debugger tool.
 
-## Configuration
-
-Edit `data/store.json` directly or use the Settings UI:
-
+### Finding a Page ID
+ 
+Use [lookup-id.com](https://lookup-id.com) — paste any Facebook page URL and get the numeric Page ID instantly.
+ 
+---
+ 
+## ⚙️ Configuration
+ 
+All settings can be managed via the **Settings tab** in the dashboard or directly in `data/store.json`.
+ 
 | Field | Description |
-|-------|-------------|
-| `targetPageId` | Your Facebook Page ID to post to |
-| `targetPageToken` | Page access token with manage_posts |
-| `pollIntervalMinutes` | How often to check for new posts |
+|---|---|
+| `targetPageId` | Numeric ID of the page to repost to |
+| `targetPageToken` | Page access token with `pages_manage_posts` |
+| `pollIntervalMinutes` | How often to check for new posts (default: 5) |
+ 
+---
 
 ## How It Works
 
