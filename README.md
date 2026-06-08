@@ -1,4 +1,30 @@
 # 🚀 FB AutoPoster — Facebook Auto Reposting Automation
+ 
+> A Node.js automation tool that monitors Facebook pages and auto-reposts new content to your target page using the Facebook Graph API.
+ 
+![Node.js](https://img.shields.io/badge/Node.js-v18+-green?style=flat-square&logo=node.js)
+![Express](https://img.shields.io/badge/Express-4.x-blue?style=flat-square&logo=express)
+![Facebook API](https://img.shields.io/badge/Facebook-Graph%20API%20v19-1877F2?style=flat-square&logo=facebook)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
+ 
+---
+ 
+## 📌 What It Does
+ 
+FB AutoPoster monitors one or more Facebook pages for new posts and automatically reposts the content (text + images) to your own Facebook page — hands-free, on a set interval.
+ 
+---
+ 
+## ✨ Features
+ 
+- 📄 Monitor multiple source Facebook pages
+- 🔄 Auto-detect and repost new content
+- 🖼️ Supports text and image posts
+- 🚫 Duplicate post prevention (via stored post IDs)
+- ⏱️ Configurable polling interval
+- 📊 Clean dashboard UI
+- 📋 Full repost activity log
+---
 
 ## Project Structure
 
