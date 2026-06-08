@@ -26,6 +26,18 @@ FB AutoPoster monitors one or more Facebook pages for new posts and automaticall
 - 📋 Full repost activity log
 ---
 
+## 🛠️ Tech Stack
+ 
+| Layer | Technology |
+|---|---|
+| Backend | Node.js + Express |
+| Scheduler | node-cron |
+| API | Facebook Graph API v19 |
+| Storage | JSON file (no database needed) |
+| Frontend | HTML + CSS + Vanilla JS |
+ 
+---
+
 ## Project Structure
 
 ```
