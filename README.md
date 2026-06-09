@@ -1,4 +1,42 @@
 # 🚀 FB AutoPoster — Facebook Auto Reposting Automation
+ 
+> A Node.js automation tool that monitors Facebook pages and auto-reposts new content to your target page using the Facebook Graph API.
+ 
+![Node.js](https://img.shields.io/badge/Node.js-v18+-green?style=flat-square&logo=node.js)
+![Express](https://img.shields.io/badge/Express-4.x-blue?style=flat-square&logo=express)
+![Facebook API](https://img.shields.io/badge/Facebook-Graph%20API%20v19-1877F2?style=flat-square&logo=facebook)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
+ 
+---
+ 
+## 📌 What It Does
+ 
+FB AutoPoster monitors one or more Facebook pages for new posts and automatically reposts the content (text + images) to your own Facebook page — hands-free, on a set interval.
+ 
+---
+ 
+## ✨ Features
+ 
+- 📄 Monitor multiple source Facebook pages
+- 🔄 Auto-detect and repost new content
+- 🖼️ Supports text and image posts
+- 🚫 Duplicate post prevention (via stored post IDs)
+- ⏱️ Configurable polling interval
+- 📊 Clean dashboard UI
+- 📋 Full repost activity log
+---
+
+## 🛠️ Tech Stack
+ 
+| Layer | Technology |
+|---|---|
+| Backend | Node.js + Express |
+| Scheduler | node-cron |
+| API | Facebook Graph API v19 |
+| Storage | JSON file (no database needed) |
+| Frontend | HTML + CSS + Vanilla JS |
+ 
+---
 
 ## Project Structure
 
@@ -46,15 +84,54 @@ http://localhost:3000
 4. Generate a **Page Access Token** via Graph API Explorer
 5. Go to **Settings** tab in dashboard and paste your tokens
 
-## Configuration
+ 
+## 🔑 Facebook API Setup
+ 
+### Required Permissions
+ 
+| Permission | Purpose |
+|---|---|
+| `pages_read_engagement` | Read posts from source pages |
+| `pages_manage_posts` | Publish posts to your target page |
+| `pages_show_list` | List pages you manage |
+ 
+### Getting Your Access Token
+ 
+1. Go to [developers.facebook.com](https://developers.facebook.com)
+2. Create a new App → choose **Business** type
+3. Navigate to **Tools → Graph API Explorer**
+4. Select your app and click **Generate Access Token**
+5. Grant the required permissions listed above
+6. Copy the token → paste it in the **Settings** tab of the dashboard
+> **Note:** User tokens expire in ~1 hour. For a permanent token, generate a **Long-Lived Page Access Token** via the token debugger tool.
 
-Edit `data/store.json` directly or use the Settings UI:
-
+### Finding a Page ID
+ 
+Use [lookup-id.com](https://lookup-id.com) — paste any Facebook page URL and get the numeric Page ID instantly.
+ 
+---
+ 
+## ⚙️ Configuration
+ 
+All settings can be managed via the **Settings tab** in the dashboard or directly in `data/store.json`.
+ 
 | Field | Description |
-|-------|-------------|
-| `targetPageId` | Your Facebook Page ID to post to |
-| `targetPageToken` | Page access token with manage_posts |
-| `pollIntervalMinutes` | How often to check for new posts |
+|---|---|
+| `targetPageId` | Numeric ID of the page to repost to |
+| `targetPageToken` | Page access token with `pages_manage_posts` |
+| `pollIntervalMinutes` | How often to check for new posts (default: 5) |
+ 
+---
+## 📸 Dashboard Preview
+ 
+| Tab | Description |
+|---|---|
+| Dashboard | Live poller status, stats, manual trigger |
+| Source Pages | Add/remove/toggle monitored pages |
+| Repost Logs | Full history of all repost activity |
+| Settings | Configure target page and API token |
+ 
+---
 
 ## How It Works
 
@@ -65,8 +142,11 @@ Edit `data/store.json` directly or use the Settings UI:
 5. Update stored `lastPostId` to prevent duplicates
 6. Log the result
 
-## Notes
+## 🔒 Important Notes
+ 
+- The **first poll** per source page saves the latest post ID **without reposting** to avoid flooding old content
+- Duplicate prevention is handled via stored `lastPostId` per source page
+- All activity is logged in `data/store.json` and visible in the Logs tab
+---
+ 
 
-- First run per page **saves** the latest post ID without reposting (avoids spam)
-- Duplicate prevention via stored post IDs
-- All logs visible in the Logs tab of the dashboard
