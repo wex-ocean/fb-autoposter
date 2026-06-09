@@ -105,6 +105,32 @@
       50% { opacity: 0.5; transform: scale(1.3); }
     }
 
+    /* ── Logout button ── */
+    .btn-logout {
+      width: 100%;
+      margin-top: 12px;
+      padding: 9px;
+      background: rgba(239,68,68,0.07);
+      border: 1px solid rgba(239,68,68,0.18);
+      border-radius: 8px;
+      color: var(--red);
+      font-size: 12px;
+      font-family: var(--mono);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .btn-logout:hover {
+      background: rgba(239,68,68,0.15);
+      border-color: rgba(239,68,68,0.35);
+    }
+
     /* ── Main ── */
     .main {
       margin-left: 220px;
@@ -116,9 +142,7 @@
     .page { display: none; }
     .page.active { display: block; }
 
-    .page-header {
-      margin-bottom: 28px;
-    }
+    .page-header { margin-bottom: 28px; }
 
     .page-title {
       font-size: 24px;
@@ -229,11 +253,7 @@
       transition: all 0.15s;
     }
 
-    .btn-primary {
-      background: var(--accent);
-      color: #fff;
-    }
-
+    .btn-primary { background: var(--accent); color: #fff; }
     .btn-primary:hover { background: #3d5ce6; }
 
     .btn-ghost {
@@ -251,7 +271,6 @@
     }
 
     .btn-danger:hover { background: rgba(239,68,68,0.2); }
-
     .btn-sm { padding: 5px 12px; font-size: 12px; }
 
     /* ── Forms ── */
@@ -312,9 +331,7 @@
     }
 
     .log-entry:last-child { border-bottom: none; }
-
     .log-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-
     .log-meta { color: var(--muted); font-size: 11px; font-family: var(--mono); margin-top: 3px; }
 
     /* ── Poller log ── */
@@ -420,6 +437,9 @@
         <span class="pulse-dot" id="statusDot"></span>
         <span id="statusText">Loading...</span>
       </div>
+      <button class="btn-logout" onclick="logout()">
+        <span>⬡</span> Logout
+      </button>
     </div>
   </aside>
 
@@ -592,6 +612,7 @@
   async function updateStatus() {
     try {
       const res = await fetch(`${API}/api/status`);
+      if (res.status === 401) { window.location.href = '/login.html'; return; }
       const data = await res.json();
       const dot = document.getElementById('statusDot');
       const txt = document.getElementById('statusText');
@@ -774,9 +795,16 @@
     setTimeout(() => el.classList.remove('show'), 4000);
   }
 
+  // ── Logout ───────────────────────────────────────────────────────
+  async function logout() {
+    if (!confirm('Are you sure you want to logout?')) return;
+    await fetch('/api/logout', { method: 'POST' });
+    window.location.href = '/login.html';
+  }
+
   // ── Init ─────────────────────────────────────────────────────────
   loadDashboard();
-  setInterval(loadDashboard, 30000); // auto-refresh every 30s
+  setInterval(loadDashboard, 30000);
 </script>
 </body>
 </html>
