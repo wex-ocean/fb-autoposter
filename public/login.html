@@ -1,10 +1,546 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FB AutoPoster — Access</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --surface2: #1a1a26;
+      --border: #2a2a3e;
+      --accent: #4f6ef7;
+      --text: #e8e8f0;
+      --muted: #6b6b8a;
+      --red: #ef4444;
+      --green: #22c55e;
+      --mono: 'Space Mono', monospace;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(79,110,247,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(79,110,247,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+
+    /* Glow orb */
+    body::after {
+      content: '';
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(79,110,247,0.07) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 420px;
+      padding: 24px;
+    }
+
+    /* Top badge */
+    .top-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 40px;
+    }
+
+    .badge-dot {
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: blink 2s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .badge-text {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* Card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Card accent line */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 40px; right: 40px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(79,110,247,0.6), transparent);
+    }
+
+    /* Icon */
+    .icon-wrap {
+      width: 60px; height: 60px;
+      background: rgba(79,110,247,0.1);
+      border: 1px solid rgba(79,110,247,0.2);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 26px;
+    }
+
+    .card-title {
+      text-align: center;
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+    }
+
+    .card-sub {
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 36px;
+      line-height: 1.5;
+    }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .divider-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .divider-text {
+      font-size: 11px;
+      font-family: var(--mono);
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* Input group */
+    .input-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 11px;
+      font-family: var(--mono);
+      color: var(--muted);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      color: var(--muted);
+      pointer-events: none;
+      transition: color 0.2s;
+    }
+
+    input[type="password"] {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 48px 13px 44px;
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      letter-spacing: 3px;
+    }
+
+    input[type="password"]::placeholder {
+      color: var(--muted);
+      letter-spacing: 1px;
+      font-size: 13px;
+    }
+
+    input[type="password"]:focus {
+      border-color: var(--accent);
+      background: rgba(79,110,247,0.04);
+    }
+
+    input[type="password"]:focus + .input-icon,
+    .input-wrap:focus-within .input-icon {
+      color: var(--accent);
+    }
+
+    .toggle-eye {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 16px;
+      padding: 0;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+    }
+
+    .toggle-eye:hover { color: var(--text); }
+
+    /* Error message */
+    .error-msg {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--red);
+      margin-bottom: 20px;
+    }
+
+    .error-msg.show { display: flex; }
+
+    /* Submit button */
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s, opacity 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      letter-spacing: 0.2px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-submit:hover { background: #3d5ce6; }
+    .btn-submit:active { transform: scale(0.98); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .btn-arrow {
+      font-size: 18px;
+      transition: transform 0.2s;
+    }
+
+    .btn-submit:hover .btn-arrow { transform: translateX(4px); }
+
+    /* Spinner */
+    .spinner {
+      display: none;
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    .btn-submit.loading .spinner { display: block; }
+    .btn-submit.loading .btn-text,
+    .btn-submit.loading .btn-arrow { display: none; }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Footer */
+    .card-footer {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .footer-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+
+    .footer-text {
+      font-size: 11px;
+      font-family: var(--mono);
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+
+    /* Bottom branding */
+    .bottom-brand {
+      text-align: center;
+      margin-top: 28px;
+      font-size: 12px;
+      font-family: var(--mono);
+      color: var(--muted);
+      opacity: 0.5;
+    }
+
+    /* Shake animation on error */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+    }
+
+    .shake { animation: shake 0.4s ease; }
+
+    /* Success state */
+    .success-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: var(--surface);
+      border-radius: 20px;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      z-index: 10;
+    }
+
+    .success-overlay.show { display: flex; }
+
+    .success-icon {
+      width: 64px; height: 64px;
+      background: rgba(34,197,94,0.1);
+      border: 1px solid rgba(34,197,94,0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .success-text {
+      font-size: 15px;
+      color: var(--green);
+      font-family: var(--mono);
+      letter-spacing: 1px;
+    }
+  </style>
 </head>
 <body>
-    
+
+<div class="wrapper">
+
+  <!-- Top badge -->
+  <div class="top-badge">
+    <div class="badge-dot"></div>
+    <span class="badge-text">Restricted System Access</span>
+    <div class="badge-dot"></div>
+  </div>
+
+  <!-- Card -->
+  <div class="card" id="loginCard">
+
+    <!-- Success overlay -->
+    <div class="success-overlay" id="successOverlay">
+      <div class="success-icon">✓</div>
+      <div class="success-text">Access Granted</div>
+    </div>
+
+    <!-- Icon -->
+    <div class="icon-wrap">⚡</div>
+
+    <div class="card-title">FB AutoPoster</div>
+    <div class="card-sub">Authorized personnel only.<br/>Enter your access key to continue.</div>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-text">Authenticate</div>
+      <div class="divider-line"></div>
+    </div>
+
+    <!-- Error -->
+    <div class="error-msg" id="errorMsg">
+      <span>⚠</span>
+      <span id="errorText">Invalid access key. Try again.</span>
+    </div>
+
+    <!-- Input -->
+    <div class="input-group">
+      <label class="input-label">Access Key</label>
+      <div class="input-wrap">
+        <input
+          type="password"
+          id="passwordInput"
+          placeholder="Enter your password"
+          autocomplete="current-password"
+          onkeydown="if(event.key==='Enter') submitLogin()"
+        />
+        <span class="input-icon" style="left:14px">🔑</span>
+        <button class="toggle-eye" onclick="toggleVisibility()" id="eyeBtn" type="button">
+          <span id="eyeIcon">👁</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Button -->
+    <button class="btn-submit" id="submitBtn" onclick="submitLogin()">
+      <div class="spinner"></div>
+      <span class="btn-text">Access System</span>
+      <span class="btn-arrow">→</span>
+    </button>
+
+    <!-- Footer -->
+    <div class="card-footer">
+      <div class="footer-dot"></div>
+      <div class="footer-text">Session expires on logout</div>
+      <div class="footer-dot"></div>
+    </div>
+
+  </div>
+
+  <div class="bottom-brand">FB-AUTOPOSTER // v1.0.0</div>
+
+</div>
+
+<script>
+  let visible = false;
+
+  function toggleVisibility() {
+    visible = !visible;
+    const input = document.getElementById('passwordInput');
+    const icon = document.getElementById('eyeIcon');
+    input.type = visible ? 'text' : 'password';
+    icon.textContent = visible ? '🙈' : '👁';
+  }
+
+  async function submitLogin() {
+    const password = document.getElementById('passwordInput').value.trim();
+    const btn = document.getElementById('submitBtn');
+    const errorMsg = document.getElementById('errorMsg');
+    const card = document.getElementById('loginCard');
+
+    if (!password) {
+      shakeCard();
+      showError('Please enter your access key.');
+      return;
+    }
+
+    btn.classList.add('loading');
+    btn.disabled = true;
+    errorMsg.classList.remove('show');
+
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        document.getElementById('successOverlay').classList.add('show');
+        setTimeout(() => { window.location.href = '/'; }, 1200);
+      } else {
+        shakeCard();
+        showError(data.message || 'Invalid access key. Try again.');
+        document.getElementById('passwordInput').value = '';
+        document.getElementById('passwordInput').focus();
+      }
+    } catch (err) {
+      shakeCard();
+      showError('Server error. Make sure the server is running.');
+    } finally {
+      btn.classList.remove('loading');
+      btn.disabled = false;
+    }
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('errorMsg');
+    document.getElementById('errorText').textContent = msg;
+    el.classList.add('show');
+  }
+
+  function shakeCard() {
+    const card = document.getElementById('loginCard');
+    card.classList.remove('shake');
+    void card.offsetWidth;
+    card.classList.add('shake');
+  }
+</script>
+
 </body>
 </html>
