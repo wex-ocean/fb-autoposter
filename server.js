@@ -2,16 +2,34 @@ const express = require("express");
 const cors = require("cors");
 const cron = require("node-cron");
 const path = require("path");
+const session = require("express-session");
 
 const storage = require("./src/storage");
 const { runPoller, getStatus } = require("./src/poller");
 const { validateToken } = require("./src/facebook");
+const { verifyPassword, requireAuth } = require("./src/auth");
 
 const app = express();
 const PORT = 3000;
 
 app.use(cors());
 app.use(express.json());
+
+// ─── Session Setup ────────────────────────────────────────────────
+app.use(session({
+  secret: "fb-autoposter-secret-key-change-this",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 8, // 8 hours
+  }
+}));
+
+// ─── Auth Middleware ──────────────────────────────────────────────
+app.use(requireAuth);
+
+// Static files served AFTER auth check
 app.use(express.static(path.join(__dirname, "public")));
 
 // ─── Cron Scheduler ──────────────────────────────────────────────
@@ -33,6 +51,30 @@ function startCron() {
 }
 
 startCron();
+
+// ─── Auth Routes ──────────────────────────────────────────────────
+
+// POST login
+app.post("/api/login", async (req, res) => {
+  const { password } = req.body;
+  if (!password) return res.status(400).json({ success: false, message: "Password required." });
+
+  const valid = await verifyPassword(password);
+  if (!valid) return res.status(401).json({ success: false, message: "Invalid access key. Try again." });
+
+  req.session.authenticated = true;
+  return res.json({ success: true });
+});
+
+// POST logout
+app.post("/api/logout", (req, res) => {
+  req.session.destroy(() => res.json({ success: true }));
+});
+
+// GET auth check
+app.get("/api/auth-check", (req, res) => {
+  res.json({ authenticated: !!req.session.authenticated });
+});
 
 // ─── API Routes ───────────────────────────────────────────────────
 
@@ -127,13 +169,16 @@ app.post("/api/validate-token", async (req, res) => {
   res.json(result);
 });
 
-// Serve frontend
+// ─── Serve Frontend ───────────────────────────────────────────────
 app.get("*", (req, res) => {
+  if (!req.session.authenticated) return res.redirect("/login.html");
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 app.listen(PORT, () => {
   console.log(`\n🚀 FB AutoPoster running at http://localhost:${PORT}`);
+  console.log(`🔐 Login required — default password: password`);
+  console.log(`🔑 Change password: node src/auth.js`);
   console.log(`📁 Data stored in ./data/store.json`);
   console.log(`⏱  Polling every ${storage.getConfig().pollIntervalMinutes} minutes\n`);
 });
