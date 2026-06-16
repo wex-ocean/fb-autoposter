@@ -20,9 +20,143 @@
       "active": true,
       "lastPostId": null,
       "addedAt": "2026-06-08T11:59:31.316Z"
+    },
+    {
+      "id": "https://www.facebook.com/digitaltechnowiz",
+      "name": "digitaltechnowiz",
+      "token": "974626092066411|1BAJdmcmpCwgxKBKgYRKmvWEbdQ",
+      "active": true,
+      "lastPostId": null,
+      "addedAt": "2026-06-16T10:02:10.826Z"
     }
   ],
   "repostLog": [
+    {
+      "sourcePageId": "https://www.facebook.com/digitaltechnowiz",
+      "sourcePageName": "digitaltechnowiz",
+      "status": "error",
+      "error": "(#100) Object does not exist, cannot be loaded due to missing permission or reviewable feature, or does not support this operation. This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature or the 'Page Public Metadata Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages, https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS and https://developers.facebook.com/docs/apps/review/feature#page-public-metadata-access for details.",
+      "timestamp": "2026-06-16T12:15:01.537Z"
+    },
+    {
+      "sourcePageId": "100044467927963",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "An access token is required to request this resource.",
+      "timestamp": "2026-06-16T12:15:01.160Z"
+    },
+    {
+      "sourcePageId": "https://www.facebook.com/balenOfficial",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "(#200) Provide valid app ID",
+      "timestamp": "2026-06-16T12:15:00.903Z"
+    },
+    {
+      "sourcePageId": "https://www.facebook.com/digitaltechnowiz",
+      "sourcePageName": "digitaltechnowiz",
+      "status": "error",
+      "error": "(#100) Object does not exist, cannot be loaded due to missing permission or reviewable feature, or does not support this operation. This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature or the 'Page Public Metadata Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages, https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS and https://developers.facebook.com/docs/apps/review/feature#page-public-metadata-access for details.",
+      "timestamp": "2026-06-16T12:05:02.149Z"
+    },
+    {
+      "sourcePageId": "100044467927963",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "An access token is required to request this resource.",
+      "timestamp": "2026-06-16T12:05:01.568Z"
+    },
+    {
+      "sourcePageId": "https://www.facebook.com/balenOfficial",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "(#200) Provide valid app ID",
+      "timestamp": "2026-06-16T12:05:01.004Z"
+    },
+    {
+      "sourcePageId": "https://www.facebook.com/digitaltechnowiz",
+      "sourcePageName": "digitaltechnowiz",
+      "status": "error",
+      "error": "(#100) Object does not exist, cannot be loaded due to missing permission or reviewable feature, or does not support this operation. This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature or the 'Page Public Metadata Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages, https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS and https://developers.facebook.com/docs/apps/review/feature#page-public-metadata-access for details.",
+      "timestamp": "2026-06-16T10:05:01.311Z"
+    },
+    {
+      "sourcePageId": "100044467927963",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "An access token is required to request this resource.",
+      "timestamp": "2026-06-16T10:05:00.938Z"
+    },
+    {
+      "sourcePageId": "https://www.facebook.com/balenOfficial",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "(#200) Provide valid app ID",
+      "timestamp": "2026-06-16T10:05:00.663Z"
+    },
+    {
+      "sourcePageId": "https://www.facebook.com/digitaltechnowiz",
+      "sourcePageName": "digitaltechnowiz",
+      "status": "error",
+      "error": "(#100) Object does not exist, cannot be loaded due to missing permission or reviewable feature, or does not support this operation. This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature or the 'Page Public Metadata Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages, https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS and https://developers.facebook.com/docs/apps/review/feature#page-public-metadata-access for details.",
+      "timestamp": "2026-06-16T10:02:52.836Z"
+    },
+    {
+      "sourcePageId": "100044467927963",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "An access token is required to request this resource.",
+      "timestamp": "2026-06-16T10:02:51.732Z"
+    },
+    {
+      "sourcePageId": "https://www.facebook.com/balenOfficial",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "(#200) Provide valid app ID",
+      "timestamp": "2026-06-16T10:02:51.457Z"
+    },
+    {
+      "sourcePageId": "100044467927963",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "An access token is required to request this resource.",
+      "timestamp": "2026-06-16T10:00:01.236Z"
+    },
+    {
+      "sourcePageId": "https://www.facebook.com/balenOfficial",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "(#200) Provide valid app ID",
+      "timestamp": "2026-06-16T10:00:00.938Z"
+    },
+    {
+      "sourcePageId": "100044467927963",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "An access token is required to request this resource.",
+      "timestamp": "2026-06-09T18:30:01.468Z"
+    },
+    {
+      "sourcePageId": "https://www.facebook.com/balenOfficial",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "(#200) Provide valid app ID",
+      "timestamp": "2026-06-09T18:30:01.193Z"
+    },
+    {
+      "sourcePageId": "100044467927963",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "An access token is required to request this resource.",
+      "timestamp": "2026-06-09T18:29:53.801Z"
+    },
+    {
+      "sourcePageId": "https://www.facebook.com/balenOfficial",
+      "sourcePageName": "balenOfficial",
+      "status": "error",
+      "error": "(#200) Provide valid app ID",
+      "timestamp": "2026-06-09T18:29:53.532Z"
+    },
     {
       "sourcePageId": "100044467927963",
       "sourcePageName": "balenOfficial",

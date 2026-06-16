@@ -3,45 +3,41 @@ const cors = require("cors");
 const cron = require("node-cron");
 const path = require("path");
 const session = require("express-session");
-
 const storage = require("./src/storage");
 const { runPoller, getStatus } = require("./src/poller");
-const { validateToken } = require("./src/facebook");
+const { validateToken, configureApi, getApiConfig } = require("./src/facebook");
 const { verifyPassword, requireAuth } = require("./src/auth");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-app.use(cors());
-app.use(express.json());
+app.use(cors({ origin: true, credentials: true }));
+app.use(express.json({ limit: "10kb" }));
 
-// ─── Session Setup ────────────────────────────────────────────────
 app.use(session({
-  secret: "fb-autoposter-secret-key-change-this",
+  secret: process.env.SESSION_SECRET || "fb-autoposter-secret-key-change-this-in-production",
   resave: false,
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 8, // 8 hours
-  }
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 1000 * 60 * 60 * 8,
+  },
 }));
 
-// ─── Auth Middleware ──────────────────────────────────────────────
 app.use(requireAuth);
 
-// Static files served AFTER auth check
 app.use(express.static(path.join(__dirname, "public")));
 
-// ─── Cron Scheduler ──────────────────────────────────────────────
 let cronJob = null;
 
 function startCron() {
   const config = storage.getConfig();
-  const mins = config.pollIntervalMinutes || 5;
+  const mins = Math.max(1, Math.min(60, config.pollIntervalMinutes || 5));
 
   if (cronJob) cronJob.stop();
 
-  // Cron: every N minutes
   cronJob = cron.schedule(`*/${mins} * * * *`, () => {
     console.log(`[CRON] Triggering poll at ${new Date().toISOString()}`);
     runPoller();
@@ -52,124 +48,160 @@ function startCron() {
 
 startCron();
 
-// ─── Auth Routes ──────────────────────────────────────────────────
-
-// POST login
-app.post("/api/login", async (req, res) => {
-  const { password } = req.body;
-  if (!password) return res.status(400).json({ success: false, message: "Password required." });
-
-  const valid = await verifyPassword(password);
-  if (!valid) return res.status(401).json({ success: false, message: "Invalid access key. Try again." });
-
-  req.session.authenticated = true;
-  return res.json({ success: true });
-});
-
-// POST logout
-app.post("/api/logout", (req, res) => {
-  req.session.destroy(() => res.json({ success: true }));
-});
-
-// GET auth check
 app.get("/api/auth-check", (req, res) => {
   res.json({ authenticated: !!req.session.authenticated });
 });
 
-// ─── API Routes ───────────────────────────────────────────────────
-
-// GET status
 app.get("/api/status", (req, res) => {
-  const status = getStatus();
-  const config = storage.getConfig();
-  const pages = storage.getSourcePages();
-  res.json({
-    status,
-    totalPages: pages.length,
-    activePages: pages.filter((p) => p.active).length,
-    pollInterval: config.pollIntervalMinutes,
-    configured: config.targetPageId !== "YOUR_TARGET_PAGE_ID",
-  });
+  try {
+    const status = getStatus();
+    const config = storage.getConfig();
+    const pages = storage.getSourcePages();
+    const apiMode = getApiConfig().useDummyApi ? "Dummy API" : "Facebook Graph API";
+    res.json({
+      status,
+      totalPages: pages.length,
+      activePages: pages.filter((p) => p.active).length,
+      pollInterval: config.pollIntervalMinutes,
+      configured: !!(config.targetPageId && config.targetPageToken),
+      apiMode,
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to get status" });
+  }
 });
 
-// GET config
 app.get("/api/config", (req, res) => {
-  res.json(storage.getConfig());
+  try {
+    res.json(storage.getConfig());
+  } catch (err) {
+    res.status(500).json({ error: "Failed to get config" });
+  }
 });
 
-// POST update config
 app.post("/api/config", (req, res) => {
   try {
-    storage.updateConfig(req.body);
-    // Restart cron if interval changed
-    if (req.body.pollIntervalMinutes) startCron();
+    const { targetPageId, targetPageToken, pollIntervalMinutes, dummyApiEndpoint, useDummyApi } = req.body;
+
+    if (typeof pollIntervalMinutes !== "undefined") {
+      const mins = parseInt(pollIntervalMinutes);
+      if (isNaN(mins) || mins < 1 || mins > 60) {
+        return res.status(400).json({ error: "Poll interval must be between 1 and 60 minutes" });
+      }
+    }
+
+    const updates = {};
+    if (typeof targetPageId !== "undefined") updates.targetPageId = targetPageId.trim();
+    if (typeof targetPageToken !== "undefined") updates.targetPageToken = targetPageToken.trim();
+    if (typeof pollIntervalMinutes !== "undefined") updates.pollIntervalMinutes = parseInt(pollIntervalMinutes);
+    if (typeof dummyApiEndpoint !== "undefined") updates.dummyApiEndpoint = dummyApiEndpoint.trim();
+
+    if (typeof useDummyApi !== "undefined") {
+      updates.useDummyApi = !!useDummyApi;
+      if (updates.useDummyApi && updates.dummyApiEndpoint) {
+        configureApi({
+          useDummyApi: true,
+          dummyApiEndpoint: updates.dummyApiEndpoint
+        });
+        console.log(`[API] Switched to Dummy API: ${updates.dummyApiEndpoint}`);
+      } else if (!updates.useDummyApi) {
+        configureApi({ useDummyApi: false, baseUrl: "https://graph.facebook.com/v19.0" });
+        console.log(`[API] Switched to Facebook Graph API`);
+      }
+    }
+
+    storage.updateConfig(updates);
+
+    if (typeof pollIntervalMinutes !== "undefined") startCron();
+
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// GET source pages
 app.get("/api/pages", (req, res) => {
-  res.json(storage.getSourcePages());
+  try {
+    res.json(storage.getSourcePages());
+  } catch (err) {
+    res.status(500).json({ error: "Failed to get pages" });
+  }
 });
 
-// POST add source page
 app.post("/api/pages", (req, res) => {
   try {
     const { id, name, token } = req.body;
-    if (!id || !name) return res.status(400).json({ error: "id and name required" });
-    storage.addSourcePage({ id, name, token: token || "" });
+
+    if (!id || !name) {
+      return res.status(400).json({ error: "Page ID and Name are required" });
+    }
+
+    const trimmedId = String(id).trim();
+    const trimmedName = String(name).trim();
+    const trimmedToken = token ? String(token).trim() : "";
+
+    if (trimmedId.length < 3) {
+      return res.status(400).json({ error: "Page ID appears invalid" });
+    }
+
+    storage.addSourcePage({ id: trimmedId, name: trimmedName, token: trimmedToken });
     res.json({ success: true });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 });
 
-// DELETE source page
 app.delete("/api/pages/:pageId", (req, res) => {
   try {
-    storage.removeSourcePage(req.params.pageId);
+    const { pageId } = req.params;
+    if (!pageId) return res.status(400).json({ error: "Page ID required" });
+    storage.removeSourcePage(pageId);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// PATCH toggle page active
 app.patch("/api/pages/:pageId/toggle", (req, res) => {
   try {
-    storage.toggleSourcePage(req.params.pageId, req.body.active);
+    const { pageId } = req.params;
+    const { active } = req.body;
+    if (!pageId) return res.status(400).json({ error: "Page ID required" });
+    storage.toggleSourcePage(pageId, !!active);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// GET repost log
 app.get("/api/logs", (req, res) => {
-  res.json(storage.getRepostLog());
+  try {
+    res.json(storage.getRepostLog());
+  } catch (err) {
+    res.status(500).json({ error: "Failed to get logs" });
+  }
 });
 
-// POST manual poll trigger
 app.post("/api/poll", async (req, res) => {
   try {
-    runPoller(); // fire and forget
+    runPoller();
     res.json({ success: true, message: "Poll triggered" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// POST validate token
 app.post("/api/validate-token", async (req, res) => {
   const { token } = req.body;
-  if (!token) return res.status(400).json({ error: "token required" });
-  const result = await validateToken(token);
-  res.json(result);
+  if (!token) return res.status(400).json({ error: "Token required" });
+  try {
+    const result = await validateToken(token);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ valid: false, error: "Validation failed" });
+  }
 });
 
-// ─── Serve Frontend ───────────────────────────────────────────────
 app.get("*", (req, res) => {
   if (!req.session.authenticated) return res.redirect("/login.html");
   res.sendFile(path.join(__dirname, "public", "index.html"));

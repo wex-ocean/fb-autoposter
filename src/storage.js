@@ -3,13 +3,50 @@ const path = require("path");
 
 const STORE_PATH = path.join(__dirname, "../data/store.json");
 
+function ensureStoreExists() {
+  const dir = path.dirname(STORE_PATH);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+  if (!fs.existsSync(STORE_PATH)) {
+    const defaultStore = {
+      config: {
+        targetPageId: "",
+        targetPageToken: "",
+        pollIntervalMinutes: 5
+      },
+      sourcePages: [],
+      repostLog: []
+    };
+    fs.writeFileSync(STORE_PATH, JSON.stringify(defaultStore, null, 2), "utf-8");
+  }
+}
+
 function readStore() {
-  const raw = fs.readFileSync(STORE_PATH, "utf-8");
-  return JSON.parse(raw);
+  ensureStoreExists();
+  try {
+    const raw = fs.readFileSync(STORE_PATH, "utf-8");
+    return JSON.parse(raw);
+  } catch (err) {
+    console.error(`[STORAGE] Failed to read store: ${err.message}`);
+    return {
+      config: { targetPageId: "", targetPageToken: "", pollIntervalMinutes: 5 },
+      sourcePages: [],
+      repostLog: []
+    };
+  }
 }
 
 function writeStore(data) {
-  fs.writeFileSync(STORE_PATH, JSON.stringify(data, null, 2), "utf-8");
+  ensureStoreExists();
+  try {
+    const tmpPath = `${STORE_PATH}.tmp`;
+    fs.writeFileSync(tmpPath, JSON.stringify(data, null, 2), "utf-8");
+    fs.renameSync(tmpPath, STORE_PATH);
+  } catch (err) {
+    console.error(`[STORAGE] Failed to write store: ${err.message}`);
+    throw err;
+  }
 }
 
 function getConfig() {
@@ -62,7 +99,6 @@ function updateLastPostId(pageId, postId) {
 function addRepostLog(entry) {
   const store = readStore();
   store.repostLog.unshift({ ...entry, timestamp: new Date().toISOString() });
-  // Keep only last 100 logs
   if (store.repostLog.length > 100) store.repostLog = store.repostLog.slice(0, 100);
   writeStore(store);
 }

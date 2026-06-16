@@ -1,4 +1,4 @@
-const { getPagePosts, publishPost } = require("./facebook");
+const { getPagePosts, publishPost, getApiConfig } = require("./facebook");
 const storage = require("./storage");
 
 let isRunning = false;
@@ -23,13 +23,11 @@ async function pollPage(page, config) {
 
     const latestPost = posts[0];
 
-    // No new post
     if (page.lastPostId === latestPost.id) {
       log(`No new post on ${page.name}`);
       return;
     }
 
-    // Skip very first run to avoid reposting old content (optional: remove if you want)
     if (!page.lastPostId) {
       log(`First run for ${page.name} — saving post ID without reposting`);
       storage.updateLastPostId(page.id, latestPost.id);
@@ -38,20 +36,17 @@ async function pollPage(page, config) {
 
     log(`New post detected on ${page.name}: ${latestPost.id}`, "success");
 
-    // Extract content
     const message = latestPost.message || latestPost.story || "";
     const imageUrl = latestPost.full_picture || null;
 
-    // Repost to target page
     const result = await publishPost(config.targetPageId, config.targetPageToken, {
       message,
       imageUrl,
     });
+    
 
-    // Update stored last post ID
     storage.updateLastPostId(page.id, latestPost.id);
 
-    // Log the repost
     storage.addRepostLog({
       sourcePageId: page.id,
       sourcePageName: page.name,
@@ -64,8 +59,9 @@ async function pollPage(page, config) {
 
     log(`Reposted successfully from ${page.name} → target page`, "success");
   } catch (err) {
-    const errorMsg = err.response?.data?.error?.message || err.message;
-    log(`Error polling ${page.name}: ${errorMsg}`, "error");
+    const errorMsg = err.response?.data?.error?.message || err.message || "Unknown error";
+    const apiMode = getApiConfig().useDummyApi ? " [Dummy API]" : "";
+    log(`Error polling ${page.name}${apiMode}: ${errorMsg}`, "error");
     storage.addRepostLog({
       sourcePageId: page.id,
       sourcePageName: page.name,
@@ -88,8 +84,10 @@ async function runPoller() {
 
   try {
     const config = storage.getConfig();
+    const apiMode = getApiConfig().useDummyApi ? "Dummy API" : "Facebook Graph API";
+    log(`Using ${apiMode} mode`);
 
-    if (!config.targetPageId || config.targetPageId === "YOUR_TARGET_PAGE_ID") {
+    if (!config.targetPageId) {
       log("Target page not configured. Please set it in Settings.", "error");
       return;
     }
